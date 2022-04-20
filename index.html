@@ -11,10 +11,10 @@
       const el = document.getElementById('h5p-container');
 
       const options = {
-        librariesPath: './h5p-test/libraries',
-        h5pJsonPath:  './h5p-test/activities/theAnswerIsCherries',
-        frameJs: './node_modules/h5p-standalone/dist/frame.bundle.js',
-        frameCss: './node_modules/h5p-standalone/dist/styles/h5p.css',
+        librariesPath: location.pathname + 'h5p-test/libraries',
+        h5pJsonPath: location.pathname + 'h5p-test/activities/theAnswerIsCherries',
+        frameJs: location.pathname + 'node_modules/h5p-standalone/dist/frame.bundle.js',
+        frameCss: location.pathname + 'node_modules/h5p-standalone/dist/styles/h5p.css',
       }
       new H5PStandalone.H5P(el, options);
 
