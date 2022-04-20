@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <script type="text/javascript" src="./node_modules/h5p-standalone/dist/main.bundle.js"></script>
+  </head>
+
+  <body>
+    <div id='h5p-container'></div>
+
+    <script type="text/javascript">
+
+      const el = document.getElementById('h5p-container');
+
+      const options = {
+        librariesPath: './h5p-test/libraries',
+        h5pJsonPath:  './h5p-test/activities/theAnswerIsCherries',
+        frameJs: './node_modules/h5p-standalone/dist/frame.bundle.js',
+        frameCss: './node_modules/h5p-standalone/dist/styles/h5p.css',
+      }
+      new H5PStandalone.H5P(el, options);
+
+    </script>
+  </body>
+</html>
