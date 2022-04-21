@@ -103,7 +103,20 @@ window.H5PIntegration = {
   </head>
 
   <body>
-    <div id='h5p-container'></div>
+    <div id="show-activity" style="display: none">
+      <div id='h5p-container'></div>
+      log events: <span id='log-count'></span>
+      <div id='logs' style="height: 200px; overflow: auto;"></div>
+    </div>
+    <div id="select-activity" style="display: none">
+      <ol>
+        <li><a href="?activity=theAnswerIsCherries">pick a fruit</a></li>
+        <li><a href="?activity=conjugateVerbs">conjugate verbs</a></li>
+        <li><a href="?activity=whatColorAreBerries">what color are berries</a></li>
+      </ol>
+    </div>
+    
+
     <script type="text/javascript">
 
 window.H5P.preventInit = true;
@@ -335,7 +348,6 @@ class H5PStandalone {
     // add missing content metadata from h5p.json
     for (const key in this.h5p) {
       if (H5PIntegration.contents[`cid-${this.id}`]['metadata'][key] === undefined) {
-        console.log('asdf');
         H5PIntegration.contents[`cid-${this.id}`]['metadata'][key] = this.h5p[key]
       }
     }
@@ -431,7 +443,7 @@ class H5PStandalone {
 
   /**
    * Loads a dependencies library.json and finds the libraries it dependson as well ass the JS and CSS it needs
-   * @param {string} libraryName 
+   * @param {string} libraryName
    */
   async findLibraryDependencies(libraryName) {
     const library = await this.getJSON(`${this.librariesPath}/${libraryName}/library.json`);
@@ -495,31 +507,52 @@ class H5PStandalone {
     </script>
 
     <script type="text/javascript">
-      H5PStandalone.prototype.initElement = function(el) {
-        if (!(el instanceof HTMLElement)) {
-          throw new Error('createH5P must be passed an element');
+
+      if (location.search === '') {
+        document.getElementById('select-activity').style.display = 'block';
+      } else {
+        document.getElementById('show-activity').style.display = 'block';
+
+        H5PStandalone.prototype.initElement = function(el) {
+          if (!(el instanceof HTMLElement)) {
+            throw new Error('createH5P must be passed an element');
+          }
+          const parent = document.createElement('div');
+          parent.classList.add('h5p-content');
+          parent.setAttribute('data-content-id', `${this.id}`);
+
+          el.append(parent);
         }
-        const parent = document.createElement('div');
-        parent.classList.add('h5p-content');
-        parent.setAttribute('data-content-id', `${this.id}`);
 
-        el.append(parent);
+        const el = document.getElementById('h5p-container');
+
+        const basePath = location.pathname.replace(/\/+$/, '/');
+
+        const options = {
+          librariesPath: basePath + 'h5p-test/libraries',
+          h5pJsonPath: basePath + 'h5p-test/activities/' + location.search.replace('?activity=', ''),
+          frameJs: basePath + 'node_modules/h5p-standalone/dist/frame.bundle.js',
+          frameCss: basePath + 'node_modules/h5p-standalone/dist/styles/h5p.css',
+          frame: true, // Show frame and buttons below H5P
+          copyright: true, // Display copyright button
+          icon: true // Display H5P icon
+        }
+        new H5PStandalone(el, options);
+
+        const logCountElement = document.getElementById('log-count');
+        const logsElement = document.getElementById('logs');
+
+        let logCount = 0;
+        H5P.externalDispatcher.on('xAPI', function (event) {
+          logCount++;
+
+          logCountElement.innerText = logCount;
+
+          const codeTag = document.createElement('pre');
+          codeTag.innerText = JSON.stringify(event.data.statement, null, 2);
+          logsElement.append(codeTag);
+        });
       }
-
-      const el = document.getElementById('h5p-container');
-
-      const basePath = location.pathname.replace(/\/+$/, '/');
-
-      const options = {
-        librariesPath: basePath + 'h5p-test/libraries',
-        h5pJsonPath: basePath + 'h5p-test/activities/theAnswerIsCherries',
-        frameJs: basePath + 'node_modules/h5p-standalone/dist/frame.bundle.js',
-        frameCss: basePath + 'node_modules/h5p-standalone/dist/styles/h5p.css',
-        frame: true, // Show frame and buttons below H5P
-        copyright: true, // Display copyright button
-        icon: true // Display H5P icon
-      }
-      new H5PStandalone(el, options);
 
     </script>
   </body>
