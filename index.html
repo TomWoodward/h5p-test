@@ -105,8 +105,10 @@ window.H5PIntegration = {
   <body>
     <div id="show-activity" style="display: none">
       <div id='h5p-container'></div>
-      log events: <span id='log-count'></span>
-      <div id='logs' style="height: 200px; overflow: auto;"></div>
+      <details style="margin-top: 20px;">
+        <summary>log events: <span id='log-count'></span></summary>
+        <div id='logs' style="height: 200px; overflow: auto;"></div>
+      </details>
     </div>
     <div id="select-activity" style="display: none">
       <ol>
