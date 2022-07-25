@@ -111,11 +111,7 @@ window.H5PIntegration = {
       </details>
     </div>
     <div id="select-activity" style="display: none">
-      <ol>
-        <li><a href="?activity=theAnswerIsCherries">pick a fruit</a></li>
-        <li><a href="?activity=conjugateVerbs">conjugate verbs</a></li>
-        <li><a href="?activity=whatColorAreBerries">what color are berries</a></li>
-      </ol>
+      <ol></ol>
     </div>
     
 
@@ -510,8 +506,30 @@ class H5PStandalone {
 
     <script type="text/javascript">
 
+      const basePath = location.pathname.replace(/\/+$/, '/');
+
       if (location.search === '') {
-        document.getElementById('select-activity').style.display = 'block';
+        const container = document.getElementById('select-activity')
+        const list = container.querySelector('ol');
+
+        fetch(basePath + 'h5p-test/activities/activities.txt')
+          .then(response => response.text())
+          .then(text => text.split('\n').filter(x => !!x))
+          .then(files => files.forEach(file => {
+        
+            const li = document.createElement('li')
+            const a = document.createElement('a')
+            a.href = `?activity=${file}`
+            a.textContent = file;
+
+            li.appendChild(a);
+            list.appendChild(li);
+          }))
+          .then(() => {
+            container.style.display = 'block';
+          });
+        ;
+
       } else {
         document.getElementById('show-activity').style.display = 'block';
 
@@ -527,8 +545,6 @@ class H5PStandalone {
         }
 
         const el = document.getElementById('h5p-container');
-
-        const basePath = location.pathname.replace(/\/+$/, '/');
 
         const options = {
           librariesPath: basePath + 'h5p-test/libraries',
