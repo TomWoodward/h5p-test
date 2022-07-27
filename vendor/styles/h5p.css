@@ -24,6 +24,10 @@
   font-display: block;
 }
 
+.h5p-content {
+  font-family: Sans-Serif;
+}
+
 html.h5p-iframe, html.h5p-iframe > body {
   font-family: Sans-Serif; /* Use the browser's default sans-serif font. (Since Heletica doesn't look nice on Windows, and Arial on OS X.) */
   width: 100%;
